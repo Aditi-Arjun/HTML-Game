@@ -1,0 +1,558 @@
+<html>
+	<head>
+		<style>
+			canvas{
+				background: #dddddd;
+			}
+		</style>
+		
+		<script>
+		
+		//this class represents Saddy character  
+		class saddyClass{
+				constructor(saddyX, saddyY,				// location
+							saddyWidth, saddyHeight,	// dimensions
+							saddySpeed,					//speed
+							saddyImgFile)				// image file name
+				{	
+					// Constructor
+					// ADD YOUR CODE HERE
+					this.x = 100;
+					this.y = 850;
+					this.width = 100;
+					this.height = 100;
+					this.img = new Image();
+					this.img.src = "Saddy.png";
+					this.speed = saddySpeed;
+					//variable to keep track if the bird is in the air
+					this.bInAir = false;
+					//variable to keep track of vartical speed
+					this.curYspeed = 0;
+				}
+				
+				// Draw the saddy on the screen
+				draw(){
+					// ADD YOUR CODE HERE
+					c.drawImage(this.img,this.x,this.y,this.width,this.height);
+				}
+				
+				
+				//moves saddy right
+				moveRight(){
+					this.x += 5;
+				}
+				//moves saddy left
+				moveLeft(){
+					this.x -= 5;
+				}
+				
+				//this makes saddy jump 
+				jump(){
+
+					if(this.bInAir == false){
+						this.bInAir = true;
+						this.curYspeed = -25;
+					}	
+				}
+				
+			
+				
+				update(){
+					//changes bird speed and movement by using curYspeed
+					if(this.bInAir == true){
+						this.y += this.curYspeed;
+						this.curYspeed++;
+					}
+					//decide when to end the jump(bird returns to ground)
+					if (this.y > 850){
+						this.y = 850;
+						this.bInAir = false;
+					}
+					//Lets Saddy rest on the platform 1
+					if(this.intersects(Pf1)==true && this.curYspeed++){
+						this.bInAir = false;
+						this.curYspeed = 0;
+						this.y = Pf1.y-this.height+15; 	
+					
+					}
+					//Lets Saddy rest on the platform 2
+					if(this.intersects(Pf2)==true && this.curYspeed++){
+						this.bInAir = false;
+						this.curYspeed = 0;
+						this.y = Pf2.y-this.height+15; 	
+					
+					}
+					//Lets Saddy rest on the platform 3
+					if(this.intersects(Pf3)==true && this.curYspeed++){
+						this.bInAir = false;
+						this.curYspeed = 0;
+						this.y = Pf3.y-this.height+15; 	
+					
+					}
+					//Lets Saddy rest on the platform 4
+					if(this.intersects(Pf4)==true && this.curYspeed++){
+						this.bInAir = false;
+						this.curYspeed = 0;
+						this.y = Pf4.y-this.height+15; 	
+					
+					}
+					//Lets Saddy rest on the platform 5
+					if(this.intersects(Pf5)==true && this.curYspeed++){
+						this.bInAir = false;
+						this.curYspeed = 0;
+						this.y = Pf5.y-this.height+15; 	
+					
+					}
+					
+					//This makes Saddy jump using the up arrow key
+					if(newkeys[38]){	//38 is up arrow
+						Saddy.jump();
+					}	
+					
+					
+				
+					
+					
+					//allow Saddy to fall off the platform 1
+					if(this.y < 850 && this.intersects(Pf1) == false){
+						this.bInAir = true;
+					}
+					//allow Saddy to fall off the platform 2
+					if(this.y < 850 && this.intersects(Pf2) == false){
+						this.bInAir = true;
+					}
+					//allow Saddy to fall off the platform 3
+					if(this.y < 850 && this.intersects(Pf3) == false){
+						this.bInAir = true;
+					}
+					//allow Saddy to fall off the platform 4
+					if(this.y < 850 && this.intersects(Pf4) == false){
+						this.bInAir = true;
+					}
+					//allow Saddy to fall off the platform 5
+					if(this.y < 850 && this.intersects(Pf5) == false){
+						this.bInAir = true;
+					}
+					
+					
+				}
+				
+				// Returns true if this bird intersects with "obj"; returns false otherwise
+				intersects(obj){
+					if (this.x < obj.x + obj.width &&
+						this.x + this.width > obj.x &&
+						this.y < obj.y + obj.height &&
+						this.y + this.height > obj.y)
+					{
+						return true;
+					}
+					else{
+						return false;
+					}
+				}
+		
+			}
+			//this class represents Happy character 
+			class happyClass{
+				constructor(saddyX, saddyY,				// location
+									saddyWidth, saddyHeight,	// dimensions
+									saddySpeed,					//speed
+									saddyImgFile)				// image file name
+						{	
+							// Constructor
+							// ADD YOUR CODE HERE
+							this.x = 2500;
+							this.y = 200;
+							this.width = 100;
+							this.height = 100;
+							this.img = new Image();
+							this.img.src = "Happy1.png";
+						}
+						
+						// Draw the saddy on the screen
+						draw(){
+							// ADD YOUR CODE HERE
+							c.drawImage(this.img,this.x,this.y,this.width,this.height);
+						}
+					
+			}
+			
+			
+			//This class represents a platform object
+			class platformClass{
+				constructor(pfX, pfY,			// location
+							pfWidth, pfHeight,	// dimensions
+							pfSpeed,			//speed of the platform
+							pfImgFile)			// image file name
+				{
+					// Constructor
+					// ADD YOUR CODE HERE
+					this.x = pfX;
+					this.y = pfY;
+					this.width = pfWidth;
+					this.height = pfHeight;
+					
+					this.speed = pfSpeed;
+					this.img = new Image();
+					this.img.src = pfImgFile;
+					this.direction = true; 
+				} 
+				
+				//Makes platform move back and forth
+				move(start, end){
+						
+					
+					if(this.direction == true){
+						this.x += this.speed;
+						if(this.x >= end - this.width){
+							this.direction = false;
+						}
+					}
+					
+					if (this.direction == false){
+						this.x -= this.speed;
+						if(this.x <= start - this.width){
+								this.direction = true;	
+						}
+					}
+					
+				}
+					
+
+				// Draw the platform on the screen
+				draw(){  
+					// ADD YOUR CODE HERE
+					c.drawImage(this.img,this.x,this.y,this.width,this.height);
+				}
+			}
+		
+			// This class represents a  crow object
+			class crowClass{
+				constructor(crowX, crowY,			// location
+							crowWidth, crowHeight,	// dimensions
+							crowSpeed,				//speed of the crow
+							crowImgFile)			// image file name
+					{
+						// Constructor
+						// ADD YOUR CODE HERE
+						this.x = crowX;
+						this.y = crowY;
+						this.width = crowWidth;
+						this.height = crowHeight;
+						
+						this.speed = crowSpeed;
+						this.direction = true;
+						this.img = new Image();
+						this.img.src = crowImgFile;
+					}
+					
+					
+			 	//Moves the crows back and forth
+				move(start, end){
+						
+					if(this.direction == true){
+						this.x += this.speed;
+						if(this.x >= end - this.width){
+							this.direction = false;
+						}
+						this.img.src = "CrowImg.png";
+					}
+					
+					if (this.direction == false){
+						this.x -= this.speed;
+						if(this.x <= start - this.width){
+								this.direction = true;	
+						}
+						this.img.src = "LeftCrowImg.png";
+					}
+					
+				}
+			
+
+				// Draw the crow on the screen
+				draw(){
+					// ADD YOUR CODE HERE
+					c.drawImage(this.img,this.x,this.y,this.width,this.height);
+				}
+			
+			}
+			
+			
+			
+			// Canvas context; used to call Canvas methods
+			var c;
+
+			// Canvas width and height.
+			var cWidth, cHeight;
+
+			// Stores the current keyboard state
+			var curkeys = [];
+			
+			// Stores keys that have been newly pressed since last update
+			var newkeys = [];
+			
+			var myBackground = new Image();
+			myBackground.src = "myBackground.jpg";
+			
+			// The current game state, can be one of: "play", "win", "lose"
+			var gameState = "play";
+			
+			var win=0;
+			var lose=0;
+			
+			var Saddy = new saddyClass();
+			
+			var Happy = new happyClass();
+			
+			var Crow1 = new crowClass (550,550,50,50,2,"CrowImg.png");
+			var Crow2 = new crowClass (800,100,50,50,2,"CrowImg.png");
+			var Crow3 = new crowClass (1500,450,50,50,2,"CrowImg.png");
+			var Crow4 = new crowClass (1600,100,50,50,2,"CrowImg.png");
+			var Crow5 = new crowClass (2500,500,50,50,2,"CrowImg.png");
+			var Crow6 = new crowClass (1500,830,50,50,10,"CrowImg.png");
+
+			var Pf1 = new platformClass(300,650,250,70,3,"platform.png");
+			var Pf2 = new platformClass(700,300,250,70,3,"platform.png");
+			var Pf3 = new platformClass(1200,550,250,70,3,"platform.png");
+			var Pf4 = new platformClass(1500,300,250,70,3,"platform.png");
+			var Pf5 = new platformClass(1950,600,250,70,3,"platform.png");
+			
+			
+			
+			function gameFrameworkInit(){		
+				// Initialize key arrays
+				for (i = 0; i < 256; i++){
+					curkeys[i] = false;
+					newkeys[i] = false;
+				}
+			
+				// Initialize global variables for canvas
+				c = myCanvas.getContext('2d');
+				cWidth = myCanvas.width;
+				cHeight = myCanvas.height;
+
+
+				// Start listeners for getting keyboard state
+				window.addEventListener('keydown',
+										 function(e){
+											if (!curkeys[e.keyCode]){
+												curkeys[e.keyCode] = true;
+												newkeys[e.keyCode] = true;
+											}
+										 }
+									   );
+				
+				window.addEventListener('keyup',
+										 function(e){ curkeys[e.keyCode] = false; }
+									   );
+
+				// Schedule the update function to be called right before the next repaint.
+				// (At the end of the update function, it will schedule itself to be called
+				// again before the NEXT repaint, and so on.
+				window.requestAnimationFrame(gameUpdate);
+			}	
+			
+			function gameUpdate(){
+				
+				//ADD CODE BELOW
+				if(gameState == "play"){
+				
+					//Moves saddy right 
+					if (curkeys[39]){		// 39 is right arrow
+						Saddy.moveRight();
+						if(Saddy.x>2700-Saddy.width){	//stops saddy from going out of the screen
+							Saddy.x = 2700-Saddy.width;
+						}
+					}
+					//moves Saddy left
+					if(curkeys[37]){		//37 is left arrow 
+						Saddy.moveLeft();
+						if(Saddy.x<0){	//stops saddy from going out of the screen
+							Saddy.x = 0;
+						}
+					}
+					
+					//if Saddy intersects with crow 1, you lose
+					if(Saddy.intersects(Crow1) == true){
+						gameState = "lose";
+					}
+					//if Saddy intersects with crow 2, you lose
+					if(Saddy.intersects(Crow2) == true){
+						gameState = "lose";
+					}
+					//if Saddy intersects with crow 3, you lose
+					if(Saddy.intersects(Crow3) == true){
+						gameState = "lose";
+					}
+					//if Saddy intersects with crow 4, you lose
+					if(Saddy.intersects(Crow4) == true){
+						gameState = "lose";
+					}
+					//if Saddy intersects with crow 5, you lose
+					if(Saddy.intersects(Crow5) == true){
+						gameState = "lose";
+					}
+					//if Saddy intersects with crow 6, you lose
+					if(Saddy.intersects(Crow6) == true){
+						gameState = "lose";
+					}
+				
+					
+					//If Saddy intersects with happy, you win 
+					if(Saddy.intersects(Happy) == true){
+						gameState = "win";
+					}
+				
+				}
+				
+				//If the player won, this code resets the game
+				if(gameState == "win"){
+					//reset the position of Saddy
+						Saddy.x = 100;
+						Saddy.y = 850;
+						
+						//reset the position of the platforms 
+						Pf1.x = 300;
+						Pf1.y = 650;
+						Pf2.x = 700;
+						Pf2.y = 300;
+						Pf3.x = 1200;
+						Pf3.y = 550;
+						
+						//Reset the position of the crows 
+						Crow1.x = 550;
+						Crow1.y = 550;
+						Crow2.x = 800;
+						Crow2.y = 100;
+						Crow3.x = 1300;
+						Crow3.y = 450;
+						Crow4.x = 1600;
+						Crow4.y = 100;
+						Crow5.x = 2500;
+						Crow5.y = 500;
+						Crow6.x = 1500;
+						Crow6.y = 830;
+						//code to increase the score. 
+						win++;
+						gameState = "play";
+				
+				}
+				//If the player lose, this code resets the game
+				if(gameState == "lose"){
+					//reset the position of Saddy
+						Saddy.x = 100;
+						Saddy.y = 850;
+						
+						//reset the position of the platforms 
+						Pf1.x = 300;
+						Pf1.y = 650;
+						Pf2.x = 700;
+						Pf2.y = 300;
+						Pf3.x = 1200;
+						Pf3.y = 550;
+						
+						//Reset the position of the crows 
+						Crow1.x = 550;
+						Crow1.y = 550;
+						Crow2.x = 800;
+						Crow2.y = 100;
+						Crow3.x = 1300;
+						Crow3.y = 450;
+						Crow4.x = 1600;
+						Crow4.y = 100;
+						Crow5.x = 2500;
+						Crow5.y = 500;
+						Crow6.x = 1500;
+						Crow6.y = 830;
+						//code to increase the score. 
+						lose++;
+						gameState = "play";
+		
+				}
+				
+				//Update all the characters here
+				Saddy.update();
+				Pf1.move(500,700);
+				Pf2.move(750,1050);
+				Pf3.move(1300,1500);
+				Pf4.move(1650,1950);
+				Pf5.move(2200,2400);
+				
+				Crow1.move(600,800);
+				Crow2.move(500,800);
+				Crow3.move(1400,1600);
+				Crow4.move(1600,1850);
+				Crow5.move(2400,2650); 
+				Crow6.move(0,2700);
+				
+				// DO NOT ADD OR MODIFY ANY CODE BELOW HERE
+
+
+				// Reset newkeys
+				for (i = 0; i < 256; i++){
+					newkeys[i] = false;
+				}
+
+				// At the end of the update function, repaint the screen
+				gameDraw();
+					
+				// Last thing the update function does is to schedule itself to be called
+				// again before the next repaint
+				window.requestAnimationFrame(gameUpdate);
+			}	
+
+			
+			
+			
+			function gameDraw(){
+				// Clear the canvas before we draw the current frame
+				c.clearRect(0,0,cWidth,cHeight);
+					
+				c.drawImage(myBackground, 0, 0, 2700, 1000);
+				
+				
+				c.font = ("50px Arial");	
+				c.fillStyle = "black";
+				//shows scores and lives on the screen
+				//c.fillText("Scores: " + scores, 400,40);
+				c.fillText("Lose: " + lose, 100,115);
+				c.fillText("Wins: " + win, 100, 60);
+				//c.fillText("Level: " + level, 100, 170);
+				
+				
+				c.font = ("70px Arial");
+				c.fillStyle = "#ff0066";	
+				c.fillText("!!Welcome To Saddy.Run !! ", 800,115);
+				
+				//Draw Happy
+				Happy.draw();
+				
+				//Draw Saddy
+				Saddy.draw();
+				
+				//Draw all the crows
+				Crow1.draw();
+				Crow2.draw();
+				Crow3.draw();
+				Crow4.draw();
+				Crow5.draw();
+				Crow6.draw();
+
+				//Draw all the platforms
+				Pf1.draw();
+				Pf2.draw();
+				Pf3.draw();
+				Pf4.draw();
+				Pf5.draw();
+
+				
+			}
+			
+			
+		</script>
+	</head>
+	
+	<body onload="gameFrameworkInit()">
+		<canvas id="myCanvas" width="2700" height="1000" ></canvas>
+	</body>
+</html>
